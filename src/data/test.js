@@ -40,17 +40,11 @@ const gameRoomsSample = [
         id: "000001",
         numOfPlayers: 2,
         currentPlayers: [],
-        winner: null,
-        log: null,
-        status: "available",
     },
     {
         id: "000002",
         numOfPlayers: 2,
         currentPlayers: [],
-        winner: null,
-        log: null,
-        status: "available",
     },
 ];
 

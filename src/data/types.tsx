@@ -10,15 +10,15 @@ export interface FsUser {
 export interface GameRoom {
   id: string;
   numOfPlayers: number;
-  currentPlayers: DocumentReference<FsUser>[];
-  status: "waiting" | "started";
+  currentPlayers: DocumentReference[];
+  readyPlayers?: DocumentReference[];
 }
 
-export interface GameMatch {
+export interface GameBattle {
   id: string;
   numOfPlayers: number;
-  currentPlayers: DocumentReference<FsUser>[];
-  winner: DocumentReference<FsUser> | null;
+  currentPlayers: DocumentReference[];
+  winner: DocumentReference | null;
   log?: string[];
-  status: "started" | "completed" | "banned";
+  status: "STARTED" | "COMPLETED" | "BANNED";
 }

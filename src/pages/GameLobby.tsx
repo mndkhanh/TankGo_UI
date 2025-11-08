@@ -1,12 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useWalletConnection } from "../hooks/useWalletConnection";
 import { TankBattleSDK } from "../sdk/suiClient";
 import type { GameRoom } from "../data/types";
 import { useRooms } from "../hooks/useRooms";
+import RoomCard from "../components/game/RoomCard";
+import { roomUserIsIn } from "../service/room";
+import { getUserFromLocalStorage } from "../utils/userLocalStorage";
+import { Link } from "react-router-dom";
 
 const GameLobby: React.FC = () => {
   const rooms = useRooms();
   console.log("Rooms in lobby:", rooms);
+
+  const [roomUserJoined, setRoomUserJoined] = useState<GameRoom | null>(null);
+  useEffect(() => {
+    const fetchRoomUser = async () => {
+      const room = await roomUserIsIn(getUserFromLocalStorage()!.uid);
+      setRoomUserJoined(room);
+    };
+    fetchRoomUser();
+  }, []);
 
   const { connected, account, signAndExecuteTransactionBlock } =
     useWalletConnection();
@@ -55,6 +68,23 @@ const GameLobby: React.FC = () => {
           <div className="flex-[1]">
             <h3 className="text-white font-bold">Thông tin người chơi</h3>
             <p className="text-white text-sm">Tài khoản: ...</p>
+            <div>
+              {roomUserJoined ? (
+                <div className="mt-4 p-4 bg-red-400 rounded">
+                  <h4 className="font-semibold mb-2 text-white">
+                    Bạn đã tham gia phòng: {roomUserJoined.id}
+                  </h4>
+                  <Link
+                    to={`/room/${roomUserJoined.id}`}
+                    className="text-white underline"
+                  >
+                    Vào phòng
+                  </Link>
+                </div>
+              ) : (
+                <p className="text-white">Bạn chưa tham gia phòng nào.</p>
+              )}
+            </div>
           </div>
           {/* right part: list cac phong hoac tao moi */}
           <div className="flex-[3] bg-blue p-10">
@@ -63,13 +93,7 @@ const GameLobby: React.FC = () => {
             {/* <div></div> */}
             <div>
               {rooms.map((room: GameRoom) => (
-                <div key={room.id}>
-                  <h4 className="text-white font-bold">{room.id}</h4>
-                  <p className="text-white text-sm">
-                    Số lượng người chơi: {room.currentPlayers.length}/
-                    {room.numOfPlayers}
-                  </p>
-                </div>
+                <RoomCard key={room.id} {...room} />
               ))}
             </div>
           </div>

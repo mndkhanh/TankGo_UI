@@ -2,15 +2,13 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 import { FaGoogle } from "react-icons/fa";
 import { auth } from "../../../config/firebase";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import type { FsUser } from "../../../data/types";
 import { saveUserToLocalStorage } from "../../../utils/userLocalStorage";
 import { saveUserData } from "../../../service/user";
 
 const SignInWithGG = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/dashboard";
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -27,7 +25,7 @@ const SignInWithGG = () => {
         };
         await saveUserData(userData);
         saveUserToLocalStorage(userData);
-        navigate(redirectTo, { replace: true });
+        navigate("/", { replace: true });
       }
     });
   };
